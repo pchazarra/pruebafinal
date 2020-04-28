@@ -1,7 +1,10 @@
 package ufv.dis.parcialfinal.PruebaPC;
 
+import java.io.FileNotFoundException;
+
 import javax.servlet.annotation.WebServlet;
 
+import com.itextpdf.text.DocumentException;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
@@ -21,6 +24,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("mytheme")
 public class MyUI extends UI {
+	
+	Lista l = new Lista();
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -28,14 +33,27 @@ public class MyUI extends UI {
         
         final TextField name = new TextField();
         name.setCaption("Type your name here:");
-
-        Button button = new Button("Click Me");
+        final TextField apellido = new TextField();
+        apellido.setCaption("Type your Lastname here:");
+        final TextField edad = new TextField();
+        edad.setCaption("Type your age here:");
+        
+        Button button = new Button("Generate Pdf");
         button.addClickListener(e -> {
             layout.addComponent(new Label("Thanks " + name.getValue() 
                     + ", it works!"));
+            Usuario u = new Usuario(name.getValue(), apellido.getValue(), Integer.parseInt(edad.getValue()));
+            l.addUsuario(u);
+            
+            try {
+				GeneradorPDF.pdf(u);
+			} catch (FileNotFoundException | DocumentException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         });
         
-        layout.addComponents(name, button);
+        layout.addComponents(name, apellido, edad, button);
         
         setContent(layout);
     }
